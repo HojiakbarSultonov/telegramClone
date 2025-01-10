@@ -4,31 +4,36 @@ import {
 	FormControl,
 	FormField,
 	FormItem,
-	FormLabel,
+
 	FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useAuth } from '@/hooks/use-auth'
 import { emailSchema } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-function signIn() {
+const SignIn = () => {
+	const { setEmail, setStep } = useAuth()
+
 	const form = useForm<z.infer<typeof emailSchema>>({
 		resolver: zodResolver(emailSchema),
-		defaultValues: {
-			email: ''
-		}
+		defaultValues: { email: '' },
 	})
+
 	function onSubmit(values: z.infer<typeof emailSchema>) {
-		console.log(values)
+		// API call to send email
+		setStep('verify')
+		setEmail(values.email)
 	}
+
 	return (
 		<div className='w-full'>
 			<p className='text-center text-muted-foreground text-sm'>
-				Telegram is a messaging app with focus on speed and security, its
-				super-fast, simple and free
+				Telegram is a messaging app with a focus on speed and security, it’s super-fast, simple and free.
 			</p>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2'>
@@ -37,20 +42,15 @@ function signIn() {
 						name='email'
 						render={({ field }) => (
 							<FormItem>
-								<FormLabel>Email</FormLabel>
+								<Label>Email</Label>
 								<FormControl>
-									<Input
-										placeholder='info@hadji.com'
-										className='h-10 bg-secondary'
-										{...field}
-									/>
+									<Input placeholder='info@sammi.ac' className='h-10 bg-secondary' {...field} />
 								</FormControl>
-
 								<FormMessage className='text-xs text-red-500' />
 							</FormItem>
 						)}
 					/>
-					<Button type='submit' size={'lg'} className='w-full'>
+					<Button type='submit' className='w-full' size={'lg'}>
 						Submit
 					</Button>
 				</form>
@@ -59,4 +59,4 @@ function signIn() {
 	)
 }
 
-export default signIn
+export default SignIn
